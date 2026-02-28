@@ -177,14 +177,11 @@ function ShopContent({ user, onLogout }) {
         saveOrder={saveOrder}
         addedMsg={addedMsg}
         onShowPayment={() => {
-          if (!user) {
-            alert('구매를 하시려면 회원가입이 필요합니다.')
-            return
-          }
           setShowPayment(true)
           setPaymentStep(1)
           setPaymentMethod('')
         }}
+        user={user}
       />
 
       <ShopFooter />
