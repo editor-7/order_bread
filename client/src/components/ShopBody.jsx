@@ -345,21 +345,48 @@ function ShopBody({
                     <div className="product-info">
                       <div className="product-qty-row">
                         <label>수량</label>
-                        <input
-                          type="number"
-                          min="1"
-                          defaultValue="1"
-                          aria-label="수량"
-                        />
+                        <div className="qty-stepper">
+                          <button
+                            type="button"
+                            className="qty-btn qty-minus"
+                            onClick={(e) => {
+                              const card = e.currentTarget.closest('.product-card')
+                              const span = card?.querySelector('.qty-value')
+                              if (span) {
+                                const v = Math.max(1, parseInt(span.textContent, 10) - 1)
+                                span.textContent = v
+                              }
+                            }}
+                            aria-label="수량 감소"
+                          >
+                            −
+                          </button>
+                          <span className="qty-value">1</span>
+                          <button
+                            type="button"
+                            className="qty-btn qty-plus"
+                            onClick={(e) => {
+                              const card = e.currentTarget.closest('.product-card')
+                              const span = card?.querySelector('.qty-value')
+                              if (span) {
+                                const v = Math.min(99, parseInt(span.textContent, 10) + 1)
+                                span.textContent = v
+                              }
+                            }}
+                            aria-label="수량 증가"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                       <button
                         type="button"
                         className="product-cart-btn"
                         onClick={(e) => {
                           const card = e.currentTarget.closest('.product-card')
-                          const input = card?.querySelector('input[type="number"]')
-                          const qty = input ? parseInt(input.value, 10) : 1
-                          addToCart(p, isNaN(qty) || qty < 1 ? 1 : qty)
+                          const span = card?.querySelector('.qty-value')
+                          const qty = span ? parseInt(span.textContent, 10) : 1
+                          addToCart(p, isNaN(qty) || qty < 1 ? 1 : Math.min(99, qty))
                         }}
                       >
                         장바구니 담기
@@ -644,14 +671,15 @@ function ShopBody({
       }
       .product-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 1.75rem;
+        max-width: 800px;
       }
-      @media (max-width: 1000px) {
-        .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+      @media (max-width: 768px) {
+        .product-grid { gap: 1.25rem; }
       }
       @media (max-width: 520px) {
-        .product-grid { grid-template-columns: 1fr; gap: 1rem; max-width: 100%; }
+        .product-grid { gap: 1rem; }
       }
       .product-card {
         border: 1px solid var(--color-border);
@@ -706,7 +734,8 @@ function ShopBody({
         .product-brand, .product-shipping { font-size: 0.75rem; }
         .product-cart-btn { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
         .product-qty-row { margin-bottom: 0.4rem; }
-        .product-qty-row label, .product-qty-row input { font-size: 0.8rem; }
+        .product-qty-row label { font-size: 0.8rem; }
+        .qty-btn { width: 36px; height: 36px; font-size: 1.2rem; }
       }
       @media (max-width: 520px) {
         .product-info { padding: 0.65rem 0.75rem; }
@@ -715,7 +744,7 @@ function ShopBody({
         .product-brand, .product-shipping { font-size: 0.72rem; margin: 0.2rem 0; }
         .product-cart-btn { padding: 0.55rem 0.75rem; font-size: 0.82rem; min-height: 42px; }
         .product-qty-row { margin-bottom: 0.35rem; }
-        .product-qty-row input { min-height: 36px; width: 50px; font-size: 0.85rem; }
+        .qty-btn { min-width: 40px; min-height: 40px; }
         .wish-btn { width: 32px; height: 32px; top: 8px; right: 8px; font-size: 0.9rem; }
       }
       .product-qty-row {
@@ -725,12 +754,34 @@ function ShopBody({
         margin-bottom: 0.6rem;
       }
       .product-qty-row label { font-size: 0.85rem; font-weight: 500; color: var(--color-soft-brown); }
-      .product-qty-row input {
-        width: 60px;
-        padding: 0.35rem 0.5rem;
-        font-size: 0.9rem;
+      .qty-stepper {
+        display: flex;
+        align-items: center;
         border: 1px solid var(--color-border);
         border-radius: 8px;
+        overflow: hidden;
+      }
+      .qty-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--color-blush);
+        color: var(--color-charcoal);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+      .qty-btn:hover { background: var(--color-rose); color: #fff; }
+      .qty-value {
+        min-width: 2rem;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-charcoal);
       }
       .product-cart-btn {
         width: 100%;

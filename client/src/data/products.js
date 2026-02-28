@@ -1,19 +1,13 @@
-// 제과점 빵 상품 데이터 (client/jpg 이미지 사용, 가격 15,000~20,000원 랜덤)
+// 제과점 빵 상품 데이터 (client/jpg 이미지 사용)
 const BREAD_NAMES = [
   '깜바뉴',
   '바게트',
-  '소보로빵',
-  '호밀빵',
-  '치아바타',
-  '베이글',
-  '팬미니',
-  '깜바뉴',
 ]
 
-const BREAD_CATEGORIES = ['깜바뉴', '식빵', '크로아상', '베이글', '건강빵', '스페셜', '클래식', '소프트', '시그니처']
+const BREAD_CATEGORIES = ['깜바뉴', '클래식']
 
-// 15000~20000 랜덤 가격 (고정된 랜덤값)
-const RANDOM_PRICES = [15200, 17800, 16500, 19900, 16800, 19200, 15500, 18500]
+// 가격
+const RANDOM_PRICES = [16800, 17800]
 
 export const products = BREAD_NAMES.map((name, i) => ({
   name,
@@ -27,6 +21,5 @@ export const products = BREAD_NAMES.map((name, i) => ({
 
 export function getCategory(product) {
   if (product.name === '깜바뉴') return '깜바뉴'
-  const idx = BREAD_NAMES.indexOf(product.name)
-  return BREAD_CATEGORIES[idx % BREAD_CATEGORIES.length]
+  return BREAD_CATEGORIES[1] || '클래식'
 }
