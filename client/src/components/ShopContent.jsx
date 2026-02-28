@@ -167,6 +167,8 @@ function ShopContent({ user, onLogout }) {
         wishlist={wishlist}
         toggleWishlist={toggleWishlist}
         addToCart={addToCart}
+        setCart={setCart}
+        setAddedMsg={setAddedMsg}
         groupedCart={groupedCart}
         changeCartQty={changeCartQty}
         removeFromCart={removeFromCart}

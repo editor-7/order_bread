@@ -25,6 +25,8 @@ function ShopBody({
   wishlist,
   toggleWishlist,
   addToCart,
+  setCart,
+  setAddedMsg,
   groupedCart,
   changeCartQty,
   removeFromCart,
@@ -386,7 +388,18 @@ function ShopBody({
                           const card = e.currentTarget.closest('.product-card')
                           const span = card?.querySelector('.qty-value')
                           const qty = span ? parseInt(span.textContent, 10) : 1
-                          addToCart(p, isNaN(qty) || qty < 1 ? 1 : Math.min(99, qty))
+                          const count = Math.min(99, Math.max(1, isNaN(qty) ? 1 : qty))
+                          if (setCart && setAddedMsg) {
+                            setCart((prev) => {
+                              const next = [...prev]
+                              for (let i = 0; i < count; i++) next.push(p)
+                              return next
+                            })
+                            setAddedMsg('장바구니에 담았습니다')
+                            setTimeout(() => setAddedMsg(''), 2500)
+                          } else {
+                            addToCart(p, count)
+                          }
                         }}
                       >
                         장바구니 담기
