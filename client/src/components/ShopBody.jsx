@@ -345,14 +345,21 @@ function ShopBody({
                     <div className="product-info">
                       <div className="product-qty-row">
                         <label>수량</label>
-                        <input type="number" min="1" defaultValue="1" id={`qty-${idx}`} />
+                        <input
+                          type="number"
+                          min="1"
+                          defaultValue="1"
+                          aria-label="수량"
+                        />
                       </div>
                       <button
                         type="button"
                         className="product-cart-btn"
-                        onClick={() => {
-                          const input = document.getElementById(`qty-${idx}`)
-                          addToCart(p, input?.value)
+                        onClick={(e) => {
+                          const card = e.currentTarget.closest('.product-card')
+                          const input = card?.querySelector('input[type="number"]')
+                          const qty = input ? parseInt(input.value, 10) : 1
+                          addToCart(p, isNaN(qty) || qty < 1 ? 1 : qty)
                         }}
                       >
                         장바구니 담기
