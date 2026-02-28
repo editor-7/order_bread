@@ -350,6 +350,8 @@ function ShopBody({
                       </button>
                     </div>
                     <div className="product-info">
+                      <h4>{p.name}</h4>
+                      <p className="product-price">{p.price.toLocaleString()}원</p>
                       <div className="product-qty-row">
                         <label>수량</label>
                         <div className="qty-stepper">
@@ -409,10 +411,7 @@ function ShopBody({
                       >
                         장바구니 담기
                       </button>
-                      <h4>{p.name}</h4>
-                      <p className="product-brand">{getCategory(p)}</p>
-                      <p className="product-price">{p.price.toLocaleString()}원</p>
-                      <p className="product-shipping">배송비 : 6,000원</p>
+                      <p className="product-shipping">배송비 6,000원</p>
                     </div>
                   </div>
                 ))}
@@ -690,22 +689,27 @@ function ShopBody({
       .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.75rem;
-        max-width: 800px;
+        gap: 1.5rem;
+        max-width: 900px;
       }
       @media (max-width: 768px) {
         .product-grid { gap: 1.25rem; }
       }
       @media (max-width: 520px) {
-        .product-grid { gap: 1rem; }
+        .product-grid { grid-template-columns: 1fr; gap: 1rem; }
       }
       .product-card {
+        display: flex;
+        flex-direction: row;
         border: 1px solid var(--color-border);
         border-radius: 12px;
         overflow: hidden;
         transition: all 0.3s ease;
         background: #fff;
         box-shadow: var(--shadow-soft);
+      }
+      @media (max-width: 520px) {
+        .product-card { flex-direction: column; }
       }
       .product-card:hover {
         box-shadow: var(--shadow-card);
@@ -714,6 +718,9 @@ function ShopBody({
       }
       .product-img-wrap {
         position: relative;
+        flex-shrink: 0;
+        width: 45%;
+        min-width: 140px;
         aspect-ratio: 1;
         background: var(--color-sage);
       }
@@ -722,11 +729,8 @@ function ShopBody({
         height: 100%;
         object-fit: cover;
       }
-      @media (max-width: 768px) {
-        .product-img-wrap { aspect-ratio: 1.35; }
-      }
       @media (max-width: 520px) {
-        .product-img-wrap { aspect-ratio: 1.5; }
+        .product-img-wrap { width: 100%; aspect-ratio: 1.4; }
       }
       .wish-btn {
         position: absolute;
@@ -744,12 +748,20 @@ function ShopBody({
         box-shadow: var(--shadow-soft);
       }
       .wish-btn:hover, .wish-btn.active { color: var(--color-rose-gold); }
-      .product-info { padding: 1.25rem; }
+      .product-info {
+        flex: 1;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .product-info h4 { order: -2; margin: 0 0 0.35rem; }
+      .product-info .product-price { order: -1; margin: 0 0 0.6rem; }
       @media (max-width: 768px) {
-        .product-info { padding: 0.9rem; }
+        .product-info { padding: 0.85rem 1rem; }
         .product-info h4 { font-size: 0.95rem; }
-        .product-price { font-size: 0.95rem; }
-        .product-brand, .product-shipping { font-size: 0.75rem; }
+        .product-info .product-price { font-size: 0.95rem; }
+        .product-shipping { font-size: 0.75rem; }
         .product-cart-btn { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
         .product-qty-row { margin-bottom: 0.4rem; }
         .product-qty-row label { font-size: 0.8rem; }
@@ -758,8 +770,8 @@ function ShopBody({
       @media (max-width: 520px) {
         .product-info { padding: 0.65rem 0.75rem; }
         .product-info h4 { font-size: 0.9rem; }
-        .product-price { font-size: 0.9rem; }
-        .product-brand, .product-shipping { font-size: 0.72rem; margin: 0.2rem 0; }
+        .product-info .product-price { font-size: 0.9rem; }
+        .product-shipping { font-size: 0.72rem; margin: 0.2rem 0; }
         .product-cart-btn { padding: 0.55rem 0.75rem; font-size: 0.82rem; min-height: 42px; }
         .product-qty-row { margin-bottom: 0.35rem; }
         .qty-btn { min-width: 40px; min-height: 40px; }
