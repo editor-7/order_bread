@@ -181,6 +181,22 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
           transition: all 0.2s;
         }
         .nav-signup-btn:hover { background: var(--color-blush); }
+        @media (max-width: 768px) {
+          .shop-header { padding: 0.75rem 1rem; }
+          .shop-header-inner { flex-wrap: wrap; gap: 0.5rem; }
+          .shop-logo { flex-wrap: wrap; gap: 0.25rem; }
+          .logo-tagline { display: none; }
+          .shop-header h1 { font-size: 1.2rem; }
+          .shop-header-right { gap: 0.5rem; flex-wrap: wrap; }
+          .header-cart-btn span:not(.cart-icon):not(.cart-count) { display: none; }
+          .header-cart-btn { padding: 0.5rem 0.75rem; }
+          .user-name { display: none; }
+          .nav-login-btn, .nav-signup-btn { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
+        }
+        @media (max-width: 480px) {
+          .shop-header h1 { font-size: 1rem; }
+          .logo-icon { font-size: 1rem; }
+        }
       `}</style>
     </>
   )

@@ -87,6 +87,21 @@ function ShopFooter() {
           font-size: 0.8rem;
           color: var(--color-muted);
         }
+        @media (max-width: 768px) {
+          .shop-footer { padding: 1.5rem 1rem; }
+          .footer-col {
+            display: block;
+            margin-right: 0;
+            margin-bottom: 1rem;
+          }
+          .footer-inner { display: flex; flex-direction: column; gap: 0.5rem; }
+        }
+        @media (max-width: 480px) {
+          .shop-footer { padding: 1.25rem 1rem; }
+          .footer-bottom { margin-top: 1.5rem; padding-top: 1rem; }
+          .footer-brand { font-size: 0.95rem; }
+          .footer-copy { font-size: 0.75rem; }
+        }
       `}</style>
     </>
   )

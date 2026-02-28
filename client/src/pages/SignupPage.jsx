@@ -242,6 +242,11 @@ function SignupPage() {
           background: linear-gradient(135deg, #faf8f5 0%, #f5ebe6 100%);
           padding: 2rem;
         }
+        @media (max-width: 480px) {
+          .signup-page { padding: 1rem; }
+          .signup-container { padding: 1.5rem; }
+          .submit-btn { min-height: 48px; }
+        }
         .signup-container {
           max-width: 480px;
           margin: 0 auto;

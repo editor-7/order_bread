@@ -159,6 +159,9 @@ function LoginPage() {
           align-items: center;
           justify-content: center;
         }
+        @media (max-width: 480px) {
+          .login-page { padding: 1rem; }
+        }
         .login-container {
           max-width: 400px;
           width: 100%;
@@ -167,6 +170,10 @@ function LoginPage() {
           border-radius: 16px;
           box-shadow: 0 4px 24px rgba(92, 74, 74, 0.08);
           border: 1px solid var(--color-border);
+        }
+        @media (max-width: 480px) {
+          .login-container { padding: 1.5rem; }
+          .login-btn { min-height: 48px; }
         }
         .back-btn {
           display: inline-flex;
