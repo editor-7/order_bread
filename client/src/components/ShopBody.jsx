@@ -471,14 +471,14 @@ function ShopBody({
     <style>{`
       .shop-layout { display: flex; flex: 1; width: 100%; }
       .shop-sidebar {
-        width: 220px;
-        min-width: 220px;
+        width: 140px;
+        min-width: 140px;
         background: linear-gradient(180deg, #faf8f5 0%, #f5ebe6 100%);
         color: var(--color-charcoal);
-        padding: 1.5rem 0;
+        padding: 1rem 0.5rem;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.6rem;
         border-right: 1px solid var(--color-border);
       }
       @media (max-width: 768px) {
@@ -521,14 +521,13 @@ function ShopBody({
         }
         .sidebar-search input { font-size: 0.95rem; padding: 0.65rem 0.75rem; }
       }
-      .sidebar-tabs { display: flex; padding: 0 1rem; gap: 0.25rem; }
+      .sidebar-tabs { display: flex; flex-direction: column; padding: 0 0.4rem; gap: 0.2rem; }
       .sidebar-tabs button {
-        flex: 1;
-        padding: 0.5rem 0.75rem;
+        padding: 0.4rem 0.5rem;
         border: none;
         background: transparent;
         color: var(--color-muted);
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-weight: 500;
         cursor: pointer;
         border-radius: 8px;
@@ -541,14 +540,14 @@ function ShopBody({
         box-shadow: var(--shadow-soft);
       }
       .sidebar-placeholder { padding: 0 1rem; font-size: 0.85rem; color: var(--color-muted); }
-      .category-list { display: flex; flex-direction: column; padding: 0 0.75rem; }
+      .category-list { display: flex; flex-direction: column; padding: 0 0.4rem; }
       .category-list button {
-        padding: 0.6rem 1rem;
+        padding: 0.4rem 0.5rem;
         text-align: left;
         border: none;
         background: transparent;
         color: var(--color-soft-brown);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.2s;
         border-radius: 8px;
@@ -558,12 +557,12 @@ function ShopBody({
         color: var(--color-rose-gold);
       }
       .sidebar-section {
-        padding: 0 1rem;
+        padding: 0 0.5rem;
         border-top: 1px solid var(--color-border);
-        padding-top: 1rem;
+        padding-top: 0.6rem;
       }
       .sidebar-section h3 {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         font-family: var(--font-heading);
         color: var(--color-charcoal);
         margin: 0 0 0.5rem;
@@ -572,13 +571,13 @@ function ShopBody({
       }
       .community-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.4rem;
-        margin-bottom: 0.5rem;
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+        margin-bottom: 0.3rem;
       }
       .community-grid a, .community-links a {
         color: var(--color-soft-brown);
-        font-size: 0.85rem;
+        font-size: 0.72rem;
         text-decoration: none;
         transition: color 0.2s;
       }
@@ -641,13 +640,14 @@ function ShopBody({
       .cs-center p { margin: 0.3rem 0; font-size: 0.8rem; color: var(--color-soft-brown); }
       .sidebar-search {
         display: flex;
-        padding: 0 1rem;
+        padding: 0 0.5rem;
         margin-top: auto;
-        gap: 0.25rem;
+        gap: 0.2rem;
       }
       .sidebar-search input {
         flex: 1;
-        padding: 0.5rem 0.75rem;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.75rem;
         border: 1px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.85rem;
@@ -667,7 +667,7 @@ function ShopBody({
       .shop-main {
         flex: 1;
         min-width: 0;
-        padding: 1.5rem 2rem;
+        padding: 1rem 1.5rem;
         background: var(--color-ivory);
         overflow-y: auto;
       }
@@ -693,7 +693,7 @@ function ShopBody({
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
-        max-width: 900px;
+        max-width: 100%;
       }
       @media (max-width: 768px) {
         .product-grid { gap: 1.25rem; }
@@ -722,8 +722,8 @@ function ShopBody({
       .product-img-wrap {
         position: relative;
         flex-shrink: 0;
-        width: 45%;
-        min-width: 140px;
+        width: 50%;
+        min-width: 160px;
         aspect-ratio: 1;
         background: var(--color-sage);
       }

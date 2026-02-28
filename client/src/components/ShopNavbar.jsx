@@ -44,7 +44,7 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
         .shop-header {
           background: linear-gradient(135deg, #faf8f5 0%, #f5ebe6 50%, #efe4de 100%);
           color: var(--color-charcoal);
-          padding: 1rem 2rem;
+          padding: 0.6rem 1rem;
           border-bottom: 1px solid var(--color-border);
           box-shadow: var(--shadow-soft);
         }
@@ -70,7 +70,7 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
         .shop-header h1 {
           margin: 0;
           font-family: var(--font-heading);
-          font-size: 1.6rem;
+          font-size: 1.25rem;
           font-weight: 600;
           letter-spacing: 0.02em;
         }
