@@ -350,7 +350,10 @@ function ShopBody({
                       </button>
                     </div>
                     <div className="product-info">
-                      <h4>{p.name}</h4>
+                      <div className="product-name-row">
+                        <h4>{p.name}</h4>
+                        <span className="product-category">{getCategory(p)}</span>
+                      </div>
                       <p className="product-price">{p.price.toLocaleString()}원</p>
                       <div className="product-qty-row">
                         <label>수량</label>
@@ -755,11 +758,23 @@ function ShopBody({
         flex-direction: column;
         justify-content: center;
       }
-      .product-info h4 { order: -2; margin: 0 0 0.35rem; }
+      .product-name-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+      }
+      .product-name-row h4 { order: 0; margin: 0; }
+      .product-category {
+        font-size: 0.8rem;
+        color: var(--color-rose-gold);
+        font-weight: 500;
+      }
       .product-info .product-price { order: -1; margin: 0 0 0.6rem; }
       @media (max-width: 768px) {
         .product-info { padding: 0.85rem 1rem; }
-        .product-info h4 { font-size: 0.95rem; }
+        .product-name-row h4 { font-size: 0.95rem; }
+        .product-category { font-size: 0.75rem; }
         .product-info .product-price { font-size: 0.95rem; }
         .product-shipping { font-size: 0.75rem; }
         .product-cart-btn { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
@@ -769,7 +784,8 @@ function ShopBody({
       }
       @media (max-width: 520px) {
         .product-info { padding: 0.65rem 0.75rem; }
-        .product-info h4 { font-size: 0.9rem; }
+        .product-name-row h4 { font-size: 0.9rem; }
+        .product-category { font-size: 0.7rem; }
         .product-info .product-price { font-size: 0.9rem; }
         .product-shipping { font-size: 0.72rem; margin: 0.2rem 0; }
         .product-cart-btn { padding: 0.55rem 0.75rem; font-size: 0.82rem; min-height: 42px; }
