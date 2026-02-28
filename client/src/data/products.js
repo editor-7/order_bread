@@ -18,5 +18,7 @@ export const products = BREAD_NAMES.map((name, i) => ({
 }))
 
 export function getCategory(product) {
+  if (product.name === '깜바뉴') return '클래식'
+  if (product.name === '바게트') return '바게트'
   return product.name
 }
