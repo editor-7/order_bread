@@ -269,10 +269,6 @@ function ShopBody({
                     alert('결제 수단을 선택해주세요.')
                     return
                   }
-                  if (!user) {
-                    alert('결제를 완료하려면 회원가입이 필요합니다.')
-                    return
-                  }
                   onPaymentStepChange(2)
                 }}
               >
