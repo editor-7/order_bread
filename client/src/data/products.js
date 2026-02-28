@@ -14,7 +14,7 @@ export const products = BREAD_NAMES.map((name, i) => ({
   unit: 'EA',
   qty: 1,
   price: RANDOM_PRICES[i],
-  img: `/jpg/${String(i + 1).padStart(2, '0')}.jpg`,
+  img: name === '깜바뉴' ? '/jpg/08.jpg' : `/jpg/${String(i + 1).padStart(2, '0')}.jpg`,
 }))
 
 export function getCategory(product) {
