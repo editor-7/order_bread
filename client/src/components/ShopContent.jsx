@@ -68,10 +68,6 @@ function ShopContent({ user, onLogout }) {
   }, [searchTerm, categoryFilter])
 
   const addToCart = (product, qty = 1) => {
-    if (!user) {
-      alert('구매를 하시려면 회원가입이 필요합니다.')
-      return
-    }
     const count = Math.max(1, parseInt(qty) || 0)
     setCart((prev) => {
       const next = [...prev]

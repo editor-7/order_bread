@@ -7,7 +7,7 @@ const BREAD_NAMES = [
 const BREAD_CATEGORIES = ['깜바뉴', '클래식']
 
 // 가격
-const RANDOM_PRICES = [16800, 17800]
+const RANDOM_PRICES = [18000, 15000]
 
 export const products = BREAD_NAMES.map((name, i) => ({
   name,
