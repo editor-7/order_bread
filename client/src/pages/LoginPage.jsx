@@ -153,7 +153,7 @@ function LoginPage() {
       <style>{`
         .login-page {
           min-height: 100vh;
-          background: #fff;
+          background: linear-gradient(135deg, #faf8f5 0%, #f5ebe6 100%);
           padding: 2rem;
           display: flex;
           align-items: center;
@@ -162,6 +162,11 @@ function LoginPage() {
         .login-container {
           max-width: 400px;
           width: 100%;
+          background: #fff;
+          padding: 2.5rem;
+          border-radius: 16px;
+          box-shadow: 0 4px 24px rgba(92, 74, 74, 0.08);
+          border: 1px solid var(--color-border);
         }
         .back-btn {
           display: inline-flex;
@@ -169,24 +174,25 @@ function LoginPage() {
           gap: 0.5rem;
           padding: 0.5rem 1rem;
           margin-bottom: 1.5rem;
-          color: #374151;
+          color: var(--color-soft-brown);
           font-size: 0.9rem;
           font-weight: 500;
-          border: 1px solid #d1d5db;
+          border: 1px solid var(--color-border);
           border-radius: 8px;
           background: #fff;
           cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
+          transition: all 0.2s;
         }
         .back-btn:hover {
-          border-color: #0d9488;
-          color: #0d9488;
-          background: #f0fdfa;
+          border-color: var(--color-rose-gold);
+          color: var(--color-rose-gold);
+          background: var(--color-blush);
         }
         .login-title {
-          font-size: 2rem;
-          font-weight: 700;
-          color: #0d9488;
+          font-family: var(--font-heading);
+          font-size: 1.75rem;
+          font-weight: 600;
+          color: var(--color-charcoal);
           margin-bottom: 2rem;
           text-align: center;
         }
@@ -208,31 +214,31 @@ function LoginPage() {
         .field-label {
           font-size: 0.9rem;
           font-weight: 500;
-          color: #374151;
+          color: var(--color-soft-brown);
         }
         .forgot-link {
           font-size: 0.85rem;
-          color: #9ca3af;
+          color: var(--color-muted);
           text-decoration: none;
         }
         .forgot-link:hover {
-          color: #0d9488;
+          color: var(--color-rose-gold);
           text-decoration: underline;
         }
         .input-field {
           width: 100%;
           padding: 0.75rem 1rem;
-          border: 1px solid #d1d5db;
-          border-radius: 8px;
+          border: 1px solid var(--color-border);
+          border-radius: 10px;
           font-size: 0.95rem;
           outline: none;
           transition: border-color 0.2s;
         }
         .input-field:focus {
-          border-color: #0d9488;
+          border-color: var(--color-rose-gold);
         }
         .input-field::placeholder {
-          color: #9ca3af;
+          color: var(--color-muted);
         }
         .input-wrapper {
           position: relative;
@@ -253,31 +259,32 @@ function LoginPage() {
           display: flex;
         }
         .toggle-password:hover {
-          color: #374151;
+          color: var(--color-charcoal);
         }
         .form-error {
-          color: #dc2626;
+          color: #c75c5c;
           font-size: 0.9rem;
           margin: 0;
         }
         .form-success {
-          color: #0d9488;
+          color: var(--color-rose-gold);
           font-size: 0.9rem;
           margin: 0;
         }
         .login-btn {
           padding: 0.875rem;
-          background: #0d9488;
+          background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-dusty-rose) 100%);
           color: #fff;
           border: none;
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 1rem;
           font-weight: 600;
           cursor: pointer;
-          transition: background 0.2s;
+          transition: all 0.25s;
         }
         .login-btn:hover:not(:disabled) {
-          background: #0f766e;
+          opacity: 0.95;
+          transform: translateY(-1px);
         }
         .login-btn:disabled {
           opacity: 0.7;
@@ -285,7 +292,7 @@ function LoginPage() {
         }
         .or-separator {
           text-align: center;
-          color: #9ca3af;
+          color: var(--color-muted);
           margin: 1.5rem 0 1rem;
           font-size: 0.9rem;
         }
@@ -301,25 +308,25 @@ function LoginPage() {
           gap: 0.5rem;
           padding: 0.75rem 1rem;
           background: #fff;
-          border: 1px solid #d1d5db;
-          border-radius: 8px;
+          border: 1px solid var(--color-border);
+          border-radius: 10px;
           font-size: 0.95rem;
-          color: #374151;
+          color: var(--color-soft-brown);
           cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
+          transition: all 0.2s;
         }
         .social-btn:hover {
-          border-color: #9ca3af;
-          background: #f9fafb;
+          border-color: var(--color-rose);
+          background: var(--color-blush);
         }
         .signup-prompt {
           text-align: center;
           margin-top: 1.5rem;
           font-size: 0.95rem;
-          color: #9ca3af;
+          color: var(--color-muted);
         }
         .signup-link {
-          color: #0d9488;
+          color: var(--color-rose-gold);
           font-weight: 500;
           text-decoration: none;
         }
@@ -330,10 +337,10 @@ function LoginPage() {
           text-align: center;
           margin-top: 1.5rem;
           font-size: 0.8rem;
-          color: #9ca3af;
+          color: var(--color-muted);
         }
         .legal-link {
-          color: #0d9488;
+          color: var(--color-rose-gold);
           text-decoration: none;
         }
         .legal-link:hover {

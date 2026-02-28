@@ -239,15 +239,17 @@ function SignupPage() {
       <style>{`
         .signup-page {
           min-height: 100vh;
-          background: #f5f5f5;
+          background: linear-gradient(135deg, #faf8f5 0%, #f5ebe6 100%);
           padding: 2rem;
         }
         .signup-container {
           max-width: 480px;
           margin: 0 auto;
           background: #fff;
-          border-radius: 12px;
+          border-radius: 16px;
           padding: 2.5rem;
+          box-shadow: 0 4px 24px rgba(92, 74, 74, 0.08);
+          border: 1px solid var(--color-border);
         }
         .back-btn {
           display: inline-flex;
@@ -255,28 +257,29 @@ function SignupPage() {
           gap: 0.5rem;
           padding: 0.5rem 1rem;
           margin-bottom: 1.5rem;
-          color: #374151;
+          color: var(--color-soft-brown);
           font-size: 0.9rem;
           font-weight: 500;
-          border: 1px solid #d1d5db;
+          border: 1px solid var(--color-border);
           border-radius: 8px;
           background: #fff;
           cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
+          transition: all 0.2s;
         }
         .back-btn:hover {
-          border-color: #0d9488;
-          color: #0d9488;
-          background: #f0fdfa;
+          border-color: var(--color-rose-gold);
+          color: var(--color-rose-gold);
+          background: var(--color-blush);
         }
         .signup-title {
+          font-family: var(--font-heading);
           font-size: 1.75rem;
-          font-weight: 700;
+          font-weight: 600;
           margin-bottom: 0.5rem;
-          color: #1a1a1a;
+          color: var(--color-charcoal);
         }
         .signup-subtitle {
-          color: #666;
+          color: var(--color-muted);
           font-size: 0.95rem;
           margin-bottom: 2rem;
         }
@@ -293,20 +296,20 @@ function SignupPage() {
         .field-label {
           font-size: 0.9rem;
           font-weight: 500;
-          color: #333;
+          color: var(--color-soft-brown);
         }
         .input-group {
           position: relative;
           display: flex;
           align-items: center;
-          background: #f9f9f9;
-          border: 1px solid #e0e0e0;
-          border-radius: 8px;
+          background: var(--color-blush);
+          border: 1px solid var(--color-border);
+          border-radius: 10px;
           padding: 0 1rem;
-          transition: border-color 0.2s;
+          transition: all 0.2s;
         }
         .input-group:focus-within {
-          border-color: #333;
+          border-color: var(--color-rose-gold);
           background: #fff;
         }
         .input-group input {
@@ -318,7 +321,7 @@ function SignupPage() {
           outline: none;
         }
         .input-group input::placeholder {
-          color: #999;
+          color: var(--color-muted);
         }
         .toggle-password {
           background: none;
@@ -336,7 +339,7 @@ function SignupPage() {
         .consent-section {
           margin-top: 0.5rem;
           padding-top: 1rem;
-          border-top: 1px solid #eee;
+          border-top: 1px solid var(--color-border);
         }
         .consent-item {
           display: flex;
@@ -345,7 +348,7 @@ function SignupPage() {
           padding: 0.5rem 0;
           cursor: pointer;
           font-size: 0.9rem;
-          color: #333;
+          color: var(--color-soft-brown);
         }
         .consent-all {
           font-weight: 600;
@@ -354,14 +357,14 @@ function SignupPage() {
         .consent-item input[type="checkbox"] {
           width: 18px;
           height: 18px;
-          accent-color: #333;
+          accent-color: var(--color-rose-gold);
           cursor: pointer;
         }
         .view-link {
           margin-left: auto;
           background: none;
           border: none;
-          color: #666;
+          color: var(--color-muted);
           font-size: 0.85rem;
           cursor: pointer;
           padding: 0;
@@ -370,7 +373,7 @@ function SignupPage() {
           text-decoration: underline;
         }
         .form-error {
-          color: #c00;
+          color: #c75c5c;
           font-size: 0.9rem;
         }
         .success-message {
@@ -378,10 +381,10 @@ function SignupPage() {
           align-items: center;
           gap: 0.5rem;
           padding: 1rem;
-          background: #e8f5e9;
-          border: 1px solid #4caf50;
-          border-radius: 8px;
-          color: #2e7d32;
+          background: var(--color-blush);
+          border: 1px solid var(--color-rose);
+          border-radius: 12px;
+          color: var(--color-rose-gold);
           font-size: 0.95rem;
         }
         .success-icon {
@@ -390,7 +393,7 @@ function SignupPage() {
           justify-content: center;
           width: 24px;
           height: 24px;
-          background: #4caf50;
+          background: var(--color-rose-gold);
           color: #fff;
           border-radius: 50%;
           font-weight: bold;
@@ -403,17 +406,18 @@ function SignupPage() {
         .submit-btn {
           margin-top: 1rem;
           padding: 0.875rem;
-          background: #1a1a1a;
+          background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-dusty-rose) 100%);
           color: #fff;
           border: none;
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 1rem;
           font-weight: 600;
           cursor: pointer;
-          transition: background 0.2s;
+          transition: all 0.25s;
         }
-        .submit-btn:hover {
-          background: #333;
+        .submit-btn:hover:not(:disabled) {
+          opacity: 0.95;
+          transform: translateY(-1px);
         }
         .submit-btn:disabled {
           opacity: 0.7;

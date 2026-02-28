@@ -84,7 +84,7 @@ function ShopPage() {
   return (
     <div className="shop-page">
       <header className="shop-header">
-        <h1>오더브레드 제과점</h1>
+        <h1>Mrs. Park Kambanew</h1>
       </header>
 
       <div className="container py-4">

@@ -49,11 +49,11 @@ function AdminPage() {
   }
 
   const statusColors = {
-    결제완료: '#e8f5e9',
-    입금대기: '#fff3e0',
-    처리중: '#fff9c4',
-    배송중: '#e3f2fd',
-    배송완료: '#e8f5e9',
+    결제완료: 'rgba(183, 110, 121, 0.2)',
+    입금대기: 'var(--color-blush)',
+    처리중: 'var(--color-sage)',
+    배송중: 'rgba(183, 110, 121, 0.15)',
+    배송완료: 'rgba(183, 110, 121, 0.2)',
   }
 
   const statusText = (status) => status || '처리중'
@@ -180,11 +180,12 @@ function AdminPage() {
       </div>
 
       <style>{`
-        .admin-page { min-height: 100vh; background: #f5f5f5; }
+        .admin-page { min-height: 100vh; background: var(--color-cream); }
         .admin-header {
-          background: #333;
-          color: #fff;
+          background: linear-gradient(135deg, #f5ebe6 0%, #efe4de 100%);
+          color: var(--color-charcoal);
           padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--color-border);
         }
         .admin-header-inner {
           max-width: 1200px;
@@ -193,17 +194,23 @@ function AdminPage() {
           justify-content: space-between;
           align-items: center;
         }
-        .admin-header h1 { margin: 0; font-size: 1.25rem; }
+        .admin-header h1 {
+          margin: 0;
+          font-size: 1.25rem;
+          font-family: var(--font-heading);
+          font-weight: 600;
+        }
         .admin-back-btn {
           padding: 0.5rem 1rem;
-          background: #e85a2a;
+          background: var(--color-rose-gold);
           color: #fff;
           text-decoration: none;
-          border-radius: 6px;
+          border-radius: 8px;
           font-size: 0.9rem;
           font-weight: 500;
+          transition: all 0.2s;
         }
-        .admin-back-btn:hover { background: #d14a1f; color: #fff; }
+        .admin-back-btn:hover { opacity: 0.95; color: #fff; }
 
         .admin-layout {
           max-width: 1200px;
@@ -218,9 +225,10 @@ function AdminPage() {
         }
         .sidebar-title {
           font-size: 1.25rem;
-          font-weight: 700;
+          font-weight: 600;
           margin: 0 0 1rem;
-          color: #1a1a1a;
+          font-family: var(--font-heading);
+          color: var(--color-charcoal);
         }
         .quick-tasks {
           display: flex;
@@ -232,20 +240,21 @@ function AdminPage() {
           align-items: center;
           gap: 0.75rem;
           padding: 0.9rem 1rem;
-          border: none;
+          border: 1px solid var(--color-border);
           background: #fff;
-          color: #333;
+          color: var(--color-soft-brown);
           font-size: 0.95rem;
           font-weight: 500;
           text-align: left;
           cursor: pointer;
-          border-radius: 8px;
-          transition: background 0.2s;
+          border-radius: 10px;
+          transition: all 0.2s;
         }
-        .task-btn:hover { background: #f0f0f0; }
+        .task-btn:hover { background: var(--color-blush); color: var(--color-rose-gold); }
         .task-btn.active {
-          background: #1a1a1a;
+          background: var(--color-rose-gold);
           color: #fff;
+          border-color: var(--color-rose-gold);
         }
         .task-icon {
           font-size: 1.1rem;
@@ -257,13 +266,15 @@ function AdminPage() {
           background: #fff;
           border-radius: 12px;
           padding: 1.5rem;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+          box-shadow: var(--shadow-soft);
+          border: 1px solid var(--color-border);
         }
         .admin-section h2 {
           font-size: 1.25rem;
-          font-weight: 700;
+          font-weight: 600;
           margin: 0 0 1rem;
-          color: #1a1a1a;
+          font-family: var(--font-heading);
+          color: var(--color-charcoal);
         }
         .section-header {
           display: flex;
@@ -300,9 +311,9 @@ function AdminPage() {
           align-items: center;
           gap: 1rem;
           padding: 1rem;
-          background: #f9f9f9;
-          border-radius: 8px;
-          border: 1px solid #eee;
+          background: var(--color-blush);
+          border-radius: 10px;
+          border: 1px solid var(--color-border);
         }
         .order-id {
           font-weight: 700;

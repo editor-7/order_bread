@@ -68,6 +68,10 @@ function ShopContent({ user, onLogout }) {
   }, [searchTerm, categoryFilter])
 
   const addToCart = (product, qty = 1) => {
+    if (!user) {
+      alert('구매를 하시려면 회원가입이 필요합니다.')
+      return
+    }
     const count = Math.max(1, parseInt(qty) || 0)
     setCart((prev) => {
       const next = [...prev]
@@ -175,6 +179,10 @@ function ShopContent({ user, onLogout }) {
         saveOrder={saveOrder}
         addedMsg={addedMsg}
         onShowPayment={() => {
+          if (!user) {
+            alert('구매를 하시려면 회원가입이 필요합니다.')
+            return
+          }
           setShowPayment(true)
           setPaymentStep(1)
           setPaymentMethod('')
@@ -184,7 +192,12 @@ function ShopContent({ user, onLogout }) {
       <ShopFooter />
 
       <style>{`
-        .shop-page { min-height: 100vh; background: #f5f5f5; display: flex; flex-direction: column; }
+        .shop-page {
+          min-height: 100vh;
+          background: var(--color-cream);
+          display: flex;
+          flex-direction: column;
+        }
       `}</style>
     </div>
   )
