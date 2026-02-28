@@ -350,7 +350,10 @@ function ShopBody({
                       </button>
                     </div>
                     <div className="product-info">
-                      <h4>{p.name}</h4>
+                      <h4 className="product-name-row">
+                        <span>{p.name}</span>
+                        <span className="product-category-tag">{getCategory(p)}</span>
+                      </h4>
                       <p className="product-price">{p.price.toLocaleString()}원</p>
                       <div className="product-qty-row">
                         <label>수량</label>
@@ -755,7 +758,21 @@ function ShopBody({
         flex-direction: column;
         justify-content: center;
       }
-      .product-info h4 { order: -2; margin: 0 0 0.35rem; }
+      .product-name-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        order: -2;
+        margin: 0 0 0.35rem;
+      }
+      .product-category-tag {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-rose-gold);
+        padding: 0.15rem 0.5rem;
+        background: rgba(183, 110, 121, 0.1);
+        border-radius: 4px;
+      }
       .product-info .product-price { order: -1; margin: 0 0 0.6rem; }
       @media (max-width: 768px) {
         .product-info { padding: 0.85rem 1rem; }
