@@ -4,6 +4,8 @@ const BREAD_NAMES = [
   '바게트',
 ]
 
+const BREAD_CATEGORIES = ['깜바뉴', '클래식']
+
 // 가격
 const RANDOM_PRICES = [18000, 15000]
 
@@ -18,5 +20,6 @@ export const products = BREAD_NAMES.map((name, i) => ({
 }))
 
 export function getCategory(product) {
-  return product.name
+  if (product.name === '깜바뉴') return '깜바뉴'
+  return BREAD_CATEGORIES[1] || '클래식'
 }
