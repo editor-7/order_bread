@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
-import { userApi } from '@/services/api'
+import { userApi, productApi } from '@/services/api'
 
 const ORDER_STORAGE_KEY = 'shop_order_list'
 
@@ -11,6 +11,9 @@ function AdminPage() {
   const [activeMenu, setActiveMenu] = useState('orders')
   const [users, setUsers] = useState([])
   const [orders, setOrders] = useState([])
+  const [products, setProducts] = useState([])
+  const [productForm, setProductForm] = useState({ name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+  const [productMsg, setProductMsg] = useState('')
 
   useEffect(() => {
     if (!isLoggedIn || !user) {
@@ -23,7 +26,17 @@ function AdminPage() {
     }
     loadUsers()
     loadOrders()
+    loadProducts()
   }, [isLoggedIn, user, navigate])
+
+  const loadProducts = async () => {
+    try {
+      const data = await productApi.getAll()
+      setProducts(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const loadUsers = async () => {
     try {
@@ -57,6 +70,36 @@ function AdminPage() {
   }
 
   const statusText = (status) => status || '처리중'
+
+  const handleProductSubmit = async (e) => {
+    e.preventDefault()
+    setProductMsg('')
+    try {
+      await productApi.create({
+        name: productForm.name.trim(),
+        desc: productForm.desc.trim() || `정성스럽게 구운 ${productForm.name.trim()}`,
+        category: productForm.category.trim() || productForm.name.trim(),
+        price: Number(productForm.price) || 0,
+        img: productForm.img.trim() || '/jpg/01.jpg',
+      })
+      setProductForm({ name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+      setProductMsg('상품이 등록되었습니다.')
+      loadProducts()
+    } catch (err) {
+      setProductMsg(err.message || '등록에 실패했습니다.')
+    }
+  }
+
+  const handleProductDelete = async (id) => {
+    if (!window.confirm('이 상품을 삭제하시겠습니까?')) return
+    try {
+      await productApi.delete(id)
+      setProductMsg('상품이 삭제되었습니다.')
+      loadProducts()
+    } catch (err) {
+      setProductMsg(err.message || '삭제에 실패했습니다.')
+    }
+  }
 
   return (
     <div className="admin-page">
@@ -112,7 +155,71 @@ function AdminPage() {
           {activeMenu === 'product' && (
             <section className="admin-section">
               <h2>새상품 등록</h2>
-              <p className="placeholder-msg">상품 등록 기능 준비 중입니다.</p>
+              <form onSubmit={handleProductSubmit} className="product-form">
+                <div className="form-row">
+                  <label>상품명 *</label>
+                  <input
+                    type="text"
+                    value={productForm.name}
+                    onChange={(e) => setProductForm((p) => ({ ...p, name: e.target.value }))}
+                    placeholder="예: 깜바뉴"
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <label>설명</label>
+                  <input
+                    type="text"
+                    value={productForm.desc}
+                    onChange={(e) => setProductForm((p) => ({ ...p, desc: e.target.value }))}
+                    placeholder="예: 정성스럽게 구운 깜바뉴"
+                  />
+                </div>
+                <div className="form-row">
+                  <label>카테고리</label>
+                  <input
+                    type="text"
+                    value={productForm.category}
+                    onChange={(e) => setProductForm((p) => ({ ...p, category: e.target.value }))}
+                    placeholder="예: 클래식"
+                  />
+                </div>
+                <div className="form-row">
+                  <label>가격(원) *</label>
+                  <input
+                    type="number"
+                    value={productForm.price}
+                    onChange={(e) => setProductForm((p) => ({ ...p, price: e.target.value }))}
+                    placeholder="예: 18000"
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <label>이미지 경로</label>
+                  <input
+                    type="text"
+                    value={productForm.img}
+                    onChange={(e) => setProductForm((p) => ({ ...p, img: e.target.value }))}
+                    placeholder="/jpg/01.jpg"
+                  />
+                </div>
+                <button type="submit" className="submit-btn">등록하기</button>
+              </form>
+              {productMsg && <p className="product-msg">{productMsg}</p>}
+              {products.length > 0 && (
+                <div className="product-list-admin">
+                  <h3>등록된 상품 ({products.length})</h3>
+                  <ul>
+                    {products.map((p) => (
+                      <li key={p._id} className="product-item-admin">
+                        <span>{p.name}</span>
+                        <span>{p.price?.toLocaleString()}원</span>
+                        <button type="button" className="delete-btn" onClick={() => handleProductDelete(p._id)}>삭제</button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
           )}
 
@@ -354,6 +461,48 @@ function AdminPage() {
         }
         .customer-type.admin { background: #e3f2fd; color: #1565c0; }
         .customer-type.customer { background: #f5f5f5; color: #666; }
+
+        .product-form { display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin-bottom: 1.5rem; }
+        .form-row { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-row label { font-size: 0.9rem; font-weight: 500; color: var(--color-charcoal); }
+        .form-row input {
+          padding: 0.6rem 0.8rem;
+          border: 1px solid var(--color-border);
+          border-radius: 8px;
+          font-size: 0.95rem;
+        }
+        .submit-btn {
+          padding: 0.7rem 1.2rem;
+          background: var(--color-rose-gold);
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 500;
+          cursor: pointer;
+          align-self: flex-start;
+        }
+        .submit-btn:hover { opacity: 0.95; }
+        .product-msg { color: var(--color-rose-gold); font-weight: 500; margin: 0.5rem 0; }
+        .product-list-admin { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border); }
+        .product-list-admin h3 { font-size: 1rem; margin: 0 0 0.75rem; }
+        .product-list-admin ul { list-style: none; padding: 0; margin: 0; }
+        .product-item-admin {
+          display: flex; align-items: center; gap: 1rem;
+          padding: 0.6rem 0;
+          border-bottom: 1px solid var(--color-border);
+        }
+        .product-item-admin span:first-child { flex: 1; }
+        .delete-btn {
+          padding: 0.3rem 0.6rem;
+          background: #f44336;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          cursor: pointer;
+        }
+        .delete-btn:hover { opacity: 0.9; }
       `}</style>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
-import { products, getCategory } from '@/data/products'
+import { productApi } from '@/services/api'
+import { staticProducts, getCategory } from '@/data/products'
 import ShopNavbar from './ShopNavbar'
 import ShopBody from './ShopBody'
 import ShopFooter from './ShopFooter'
@@ -19,6 +20,11 @@ function ShopContent({ user, onLogout }) {
   const [showOrderList, setShowOrderList] = useState(false)
   const [orderList, setOrderList] = useState([])
   const [deliveryInfo, setDeliveryInfo] = useState({ name: '', phone: '', address: '' })
+  const [products, setProducts] = useState(staticProducts)
+
+  useEffect(() => {
+    productApi.getAll().then(setProducts).catch(() => setProducts(staticProducts))
+  }, [])
 
   useEffect(() => {
     try {

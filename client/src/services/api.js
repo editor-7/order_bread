@@ -47,3 +47,11 @@ export const userApi = {
   update: (id, data) => request(`/users/${id}`, { method: 'PUT', body: data }),
   delete: (id) => request(`/users/${id}`, { method: 'DELETE' }),
 }
+
+export const productApi = {
+  getAll: () => request('/products', { method: 'GET' }),
+  getById: (id) => request(`/products/${id}`, { method: 'GET' }),
+  create: (data) => request('/products', { method: 'POST', body: data }),
+  update: (id, data) => request(`/products/${id}`, { method: 'PUT', body: data }),
+  delete: (id) => request(`/products/${id}`, { method: 'DELETE' }),
+}
