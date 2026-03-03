@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
   PORT: process.env.PORT || 5000,
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/shoping_mall',
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/order_bread',
   JWT_SECRET: process.env.JWT_SECRET,
   NODE_ENV: process.env.NODE_ENV || 'development',
 };

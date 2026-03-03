@@ -22,7 +22,7 @@ cp .env.example .env
 `.env` 예시:
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/shoping_mall
+MONGODB_URI=mongodb://localhost:27017/order_bread
 JWT_SECRET=강력한_랜덤_문자열_입력
 NODE_ENV=development
 ```

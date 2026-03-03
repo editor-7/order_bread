@@ -13,7 +13,7 @@
 3. Network Access → `0.0.0.0/0` 추가 (클라우드타입에서 접속 허용)
 4. Connect → 연결 문자열 복사
 
-   예: `mongodb+srv://user:password@cluster0.xxxxx.mongodb.net/shoping_mall`
+   예: `mongodb+srv://user:password@cluster0.xxxxx.mongodb.net/order_bread`
 
 ## 3. 클라우드타입 대시보드 배포
 
