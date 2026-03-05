@@ -6,7 +6,7 @@ app: node@18
 options:
   ports: "3000"
   install: cd server && npm install
-  start: cd server &&npm start
+  start: cd server && npm start
   healthz: /
   env:
     - name: NODE_ENV
