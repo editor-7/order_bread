@@ -23,12 +23,12 @@ jobs:
           yaml: >
             name: order-bread
 
-            app: node@24
+            app: node@18
 
             options:
               ports: "3000"
-              install: cd server&& npm install
-              start: cd server&&npm start
+              install: cd server && npm install
+              start: cd server &&npm start
               healthz: /
               env:
                 - name: NODE_ENV
