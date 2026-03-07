@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { userApi, productApi } from '@/services/api'
 import { ORDER_STORAGE_KEY } from '@/utils/constants'
 import ShopNavbar from '@/components/ShopNavbar'
+import ImageUpload from '@/components/ImageUpload'
 import './AdminPage.css'
 
 function AdminPage() {
@@ -13,8 +14,12 @@ function AdminPage() {
   const [users, setUsers] = useState([])
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
-  const [productForm, setProductForm] = useState({ name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+  const [productForm, setProductForm] = useState({ sku: '', name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+  const [editingId, setEditingId] = useState(null)
   const [productMsg, setProductMsg] = useState('')
+  const [productSearch, setProductSearch] = useState('')
+  const [productCategoryFilter, setProductCategoryFilter] = useState('all')
+  const [productSortBy, setProductSortBy] = useState('sku')
 
   useEffect(() => {
     if (!isLoggedIn || !user) {
@@ -33,7 +38,7 @@ function AdminPage() {
   const loadProducts = async () => {
     try {
       const data = await productApi.getAll()
-      setProducts(data)
+      setProducts(Array.isArray(data) ? data : data?.data || data?.products || [])
     } catch (err) {
       console.error(err)
     }
@@ -72,33 +77,131 @@ function AdminPage() {
 
   const statusText = (status) => status || '처리중'
 
+  const handleProductEdit = async (p) => {
+    setEditingId(p._id)
+    setProductMsg('')
+    try {
+      const fresh = await productApi.getById(p._id)
+      setProductForm({
+        sku: fresh.sku ?? '',
+        name: fresh.name || '',
+        desc: fresh.desc || '',
+        category: fresh.category || '',
+        price: fresh.price ?? '',
+        img: fresh.img || '/jpg/01.jpg',
+      })
+    } catch {
+      setProductForm({
+        sku: p.sku ?? '',
+        name: p.name || '',
+        desc: p.desc || '',
+        category: p.category || '',
+        price: p.price ?? '',
+        img: p.img || '/jpg/01.jpg',
+      })
+    }
+  }
+
   const handleProductSubmit = async (e) => {
     e.preventDefault()
     setProductMsg('')
+    const skuVal = String(productForm.sku ?? '').trim()
+    const payload = {
+      sku: skuVal,
+      name: productForm.name.trim(),
+      desc: productForm.desc.trim() || `정성스럽게 구운 ${productForm.name.trim()}`,
+      category: productForm.category.trim() || productForm.name.trim(),
+      price: Number(productForm.price) || 0,
+      img: productForm.img.trim() || '/jpg/01.jpg',
+    }
     try {
-      await productApi.create({
-        name: productForm.name.trim(),
-        desc: productForm.desc.trim() || `정성스럽게 구운 ${productForm.name.trim()}`,
-        category: productForm.category.trim() || productForm.name.trim(),
-        price: Number(productForm.price) || 0,
-        img: productForm.img.trim() || '/jpg/01.jpg',
-      })
-      setProductForm({ name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
-      setProductMsg('상품이 등록되었습니다.')
-      loadProducts()
+      if (editingId) {
+        const updated = await productApi.update(editingId, payload)
+        setProducts((prev) => prev.map((p) => (String(p._id) === String(editingId) ? updated : p)))
+        setProductMsg('상품이 수정되었습니다.')
+        setProductForm({
+          sku: updated.sku || '',
+          name: updated.name || '',
+          desc: updated.desc || '',
+          category: updated.category || '',
+          price: updated.price ?? '',
+          img: updated.img || '/jpg/01.jpg',
+        })
+      } else {
+        await productApi.create(payload)
+        setProductMsg('상품이 등록되었습니다.')
+        setProductForm({ sku: '', name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+      }
+      if (!editingId) loadProducts()
     } catch (err) {
-      setProductMsg(err.message || '등록에 실패했습니다.')
+      setProductMsg(err?.message || (editingId ? '수정에 실패했습니다.' : '등록에 실패했습니다.'))
     }
   }
+
+  const managedProducts = (() => {
+    let list = [...products]
+    if (productSearch.trim()) {
+      const term = productSearch.trim().toLowerCase()
+      list = list.filter(
+        (p) =>
+          (p.name || '').toLowerCase().includes(term) ||
+          (p.sku || '').toLowerCase().includes(term) ||
+          (p.category || '').toLowerCase().includes(term) ||
+          (p.desc || '').toLowerCase().includes(term)
+      )
+    }
+    if (productCategoryFilter !== 'all') {
+      list = list.filter((p) => (p.category || p.name) === productCategoryFilter)
+    }
+    const skuSort = (a, b) => {
+      const skuA = (a.sku || '').trim()
+      const skuB = (b.sku || '').trim()
+      if (skuA && skuB) return skuA.localeCompare(skuB)
+      if (skuA) return -1
+      if (skuB) return 1
+      return String(a._id || '').localeCompare(String(b._id || ''))
+    }
+    if (productSortBy === 'sku') list.sort(skuSort)
+    else if (productSortBy === 'name') list.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+    else if (productSortBy === 'priceAsc') list.sort((a, b) => (a.price || 0) - (b.price || 0))
+    else if (productSortBy === 'priceDesc') list.sort((a, b) => (b.price || 0) - (a.price || 0))
+    else if (productSortBy === 'createdAt') list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+    return list
+  })()
+
+  const productCategories = (() => {
+    const sorted = [...products].sort((a, b) => {
+      const skuA = (a.sku || '').trim()
+      const skuB = (b.sku || '').trim()
+      if (skuA && skuB) return skuA.localeCompare(skuB)
+      if (skuA) return -1
+      if (skuB) return 1
+      return String(a._id || '').localeCompare(String(b._id || ''))
+    })
+    const seen = new Set()
+    return sorted
+      .map((p) => p.category || p.name)
+      .filter(Boolean)
+      .filter((c) => {
+        if (seen.has(c)) return false
+        seen.add(c)
+        return true
+      })
+  })()
 
   const handleProductDelete = async (id) => {
     if (!window.confirm('이 상품을 삭제하시겠습니까?')) return
     try {
       await productApi.delete(id)
+      setProducts((prev) => prev.filter((p) => String(p._id) !== String(id)))
+      if (editingId && String(editingId) === String(id)) {
+        setEditingId(null)
+        setProductForm({ sku: '', name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+      }
       setProductMsg('상품이 삭제되었습니다.')
-      loadProducts()
+      setTimeout(() => setProductMsg(''), 3000)
     } catch (err) {
-      setProductMsg(err.message || '삭제에 실패했습니다.')
+      setProductMsg(err?.message || '삭제에 실패했습니다.')
     }
   }
 
@@ -125,6 +228,14 @@ function AdminPage() {
             >
               <span className="task-icon">+</span>
               새상품 등록
+            </button>
+            <button
+              type="button"
+              className={`task-btn ${activeMenu === 'productList' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('productList')}
+            >
+              <span className="task-icon">📋</span>
+              상품관리
             </button>
             <button
               type="button"
@@ -156,8 +267,17 @@ function AdminPage() {
         <main className="admin-main">
           {activeMenu === 'product' && (
             <section className="admin-section">
-              <h2>새상품 등록</h2>
+              <h2>{editingId ? '상품 수정' : '새상품 등록'}</h2>
               <form onSubmit={handleProductSubmit} className="product-form">
+                <div className="form-row">
+                  <label>상품 ID (SKU)</label>
+                  <input
+                    type="text"
+                    value={productForm.sku ?? ''}
+                    onChange={(e) => setProductForm((p) => ({ ...p, sku: e.target.value }))}
+                    placeholder="예: BREAD-001"
+                  />
+                </div>
                 <div className="form-row">
                   <label>상품명 *</label>
                   <input
@@ -197,15 +317,31 @@ function AdminPage() {
                   />
                 </div>
                 <div className="form-row">
-                  <label>이미지 경로</label>
-                  <input
-                    type="text"
+                  <label>이미지</label>
+                  <ImageUpload
                     value={productForm.img}
-                    onChange={(e) => setProductForm((p) => ({ ...p, img: e.target.value }))}
+                    onChange={(url) => setProductForm((p) => ({ ...p, img: url || '/jpg/01.jpg' }))}
                     placeholder="/jpg/01.jpg"
                   />
                 </div>
-                <button type="submit" className="submit-btn">등록하기</button>
+                <div className="form-actions">
+                  <button type="submit" className="submit-btn">
+                    {editingId ? '수정완료' : '등록하기'}
+                  </button>
+                  {editingId && (
+                    <button
+                      type="button"
+                      className="cancel-btn"
+                      onClick={() => {
+                        setEditingId(null)
+                        setProductForm({ sku: '', name: '', desc: '', category: '', price: '', img: '/jpg/01.jpg' })
+                        setProductMsg('')
+                      }}
+                    >
+                      취소
+                    </button>
+                  )}
+                </div>
               </form>
               {productMsg && <p className="product-msg">{productMsg}</p>}
               {products.length > 0 && (
@@ -214,13 +350,95 @@ function AdminPage() {
                   <ul>
                     {products.map((p) => (
                       <li key={p._id} className="product-item-admin">
+                        <span className="product-sku">{p.sku || '-'}</span>
                         <span>{p.name}</span>
                         <span>{p.price?.toLocaleString()}원</span>
-                        <button type="button" className="delete-btn" onClick={() => handleProductDelete(p._id)}>삭제</button>
+                        <div className="product-actions">
+                          <button type="button" className="edit-btn" onClick={() => handleProductEdit(p)}>수정</button>
+                          <button type="button" className="delete-btn" onClick={() => handleProductDelete(p._id)}>삭제</button>
+                        </div>
                       </li>
                     ))}
                   </ul>
                 </div>
+              )}
+            </section>
+          )}
+
+          {activeMenu === 'productList' && (
+            <section className="admin-section">
+              <div className="section-header">
+                <h2>상품관리 ({managedProducts.length}{managedProducts.length !== products.length ? ` / ${products.length}` : ''})</h2>
+                <button type="button" className="task-btn" onClick={() => { setProductMsg(''); setActiveMenu('product') }}>
+                  + 새상품 등록
+                </button>
+              </div>
+              {productMsg && <p className="product-msg">{productMsg}</p>}
+              {products.length === 0 ? (
+                <p className="empty-msg">등록된 상품이 없습니다. 새상품 등록에서 추가해 주세요.</p>
+              ) : (
+                <>
+                  <div className="product-management-toolbar">
+                    <input
+                      type="text"
+                      placeholder="상품명, SKU, 카테고리 검색"
+                      value={productSearch}
+                      onChange={(e) => setProductSearch(e.target.value)}
+                      className="product-search-input"
+                    />
+                    <select
+                      value={productCategoryFilter}
+                      onChange={(e) => setProductCategoryFilter(e.target.value)}
+                      className="product-filter-select"
+                    >
+                      <option value="all">전체 카테고리</option>
+                      {productCategories.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={productSortBy}
+                      onChange={(e) => setProductSortBy(e.target.value)}
+                      className="product-sort-select"
+                    >
+                      <option value="sku">ID(SKU)순</option>
+                      <option value="createdAt">최신순</option>
+                      <option value="name">이름순</option>
+                      <option value="priceAsc">가격 낮은순</option>
+                      <option value="priceDesc">가격 높은순</option>
+                    </select>
+                  </div>
+                  <div className="product-list-table">
+                    <div className="product-list-header">
+                      <span>이미지</span>
+                      <span>SKU</span>
+                      <span>상품명</span>
+                      <span>카테고리</span>
+                      <span>가격</span>
+                      <span>관리</span>
+                    </div>
+                    {managedProducts.map((p) => (
+                    <div key={p._id} className="product-list-row">
+                      <div className="product-list-img">
+                        <img src={p.img || '/jpg/01.jpg'} alt={p.name} onError={(e) => { e.target.style.display = 'none' }} />
+                      </div>
+                      <span className="product-list-sku">{p.sku || '-'}</span>
+                      <span className="product-list-name">{p.name}</span>
+                      <span className="product-list-category">{p.category || '-'}</span>
+                      <span className="product-list-price">{p.price?.toLocaleString()}원</span>
+                      <div className="product-list-actions">
+                        <button type="button" className="edit-btn" onClick={() => { handleProductEdit(p); setActiveMenu('product') }}>
+                          수정
+                        </button>
+                        <button type="button" className="delete-btn" onClick={() => handleProductDelete(p._id)}>삭제</button>
+                      </div>
+                    </div>
+                  ))}
+                  </div>
+                  {managedProducts.length === 0 && products.length > 0 && (
+                    <p className="empty-msg">검색 결과가 없습니다.</p>
+                  )}
+                </>
               )}
             </section>
           )}

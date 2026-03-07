@@ -1,5 +1,7 @@
+// 로컬 개발: /api → Vite proxy → localhost:5000
+// 프로덕션: VITE_API_URL 필요 (예: https://xxx.cloudtype.app)
 const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
+  ? `${String(import.meta.env.VITE_API_URL).replace(/\/$/, '')}/api`
   : '/api'
 
 function getAuthHeaders() {
@@ -10,6 +12,7 @@ function getAuthHeaders() {
 async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`
   const config = {
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       ...getAuthHeaders(),
@@ -20,8 +23,14 @@ async function request(endpoint, options = {}) {
   if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
     config.body = JSON.stringify(options.body)
   }
-  const res = await fetch(url, config)
-  const text = await res.text()
+  let res, text
+  try {
+    res = await fetch(url, config)
+    text = await res.text()
+  } catch (err) {
+    const msg = err?.message || String(err)
+    throw { status: 0, message: msg.includes('fetch') || msg.includes('Network') ? '서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해 주세요.' : msg }
+  }
   let data = {}
   try {
     data = text ? JSON.parse(text) : {}
@@ -29,11 +38,12 @@ async function request(endpoint, options = {}) {
     data = {}
   }
   if (!res.ok) {
-    const serverMessage = data.message || data.error || data.msg
+    const serverMessage = data.message || data.error || data.msg || (typeof text === 'string' && text.length < 200 ? text : null)
     const defaultMessage =
       res.status === 401 ? '비밀번호가 올바르지 않습니다.' :
       res.status === 400 ? '입력 정보를 확인해 주세요.' :
-      '요청에 실패했습니다.'
+      res.status === 500 ? '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.' :
+      `요청에 실패했습니다. (${res.status})`
     throw { status: res.status, message: serverMessage || defaultMessage }
   }
   return data

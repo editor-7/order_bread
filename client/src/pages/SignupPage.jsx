@@ -75,9 +75,8 @@ function SignupPage() {
         navigate('/')
       }, 2000)
     } catch (err) {
-      const message = err.message || '회원가입에 실패했습니다.'
-      const isNetworkError = typeof message === 'string' && (message.includes('fetch') || message.includes('Network'))
-      setError(isNetworkError ? '서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해 주세요.' : message)
+      const message = err?.message || (typeof err === 'string' ? err : '회원가입에 실패했습니다.')
+      setError(message)
     } finally {
       setIsLoading(false)
     }

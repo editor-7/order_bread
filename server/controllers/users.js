@@ -30,7 +30,8 @@ const createUser = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({ message: '이미 존재하는 이메일입니다.' });
     }
-    res.status(400).json({ message: error.message });
+    console.error('회원가입 오류:', error);
+    res.status(400).json({ message: error.message || '회원가입에 실패했습니다.' });
   }
 };
 

@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { productApi } from '@/services/api'
-import { staticProducts, getCategory } from '@/data/products'
+import { getCategory } from '@/data/products'
 import { ORDER_STORAGE_KEY } from '@/utils/constants'
 import ShopNavbar from './ShopNavbar'
 import ShopBody from './ShopBody'
@@ -10,6 +10,15 @@ function ShopContent({ user, onLogout }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [cart, setCart] = useState([])
+  const prevUserIdRef = useRef(null)
+
+  useEffect(() => {
+    const currentId = user?._id ?? null
+    if (prevUserIdRef.current !== currentId) {
+      setCart([])
+      prevUserIdRef.current = currentId
+    }
+  }, [user])
   const [wishlist, setWishlist] = useState(new Set())
   const [addedMsg, setAddedMsg] = useState('')
   const [showPayment, setShowPayment] = useState(false)
@@ -18,10 +27,73 @@ function ShopContent({ user, onLogout }) {
   const [showOrderList, setShowOrderList] = useState(false)
   const [orderList, setOrderList] = useState([])
   const [deliveryInfo, setDeliveryInfo] = useState({ name: '', phone: '', address: '' })
-  const [products, setProducts] = useState(staticProducts)
+  const [products, setProducts] = useState([])
+  const [productsLoading, setProductsLoading] = useState(true)
+  const [productsLoadError, setProductsLoadError] = useState(false)
+  const [productPage, setProductPage] = useState(1)
+
+  const ITEMS_PER_PAGE = 2
+
+  const toProductList = (data) => {
+    if (Array.isArray(data)) return data
+    if (data?.data && Array.isArray(data.data)) return data.data
+    if (data?.products && Array.isArray(data.products)) return data.products
+    return []
+  }
+
+  const loadProducts = useCallback(() => {
+    setProductsLoadError(false)
+    setProductsLoading(true)
+    return productApi
+      .getAll()
+      .then((data) => {
+        setProducts(toProductList(data))
+        setProductsLoadError(false)
+        setProductsLoading(false)
+      })
+      .catch((err) => {
+        console.error('[상품 로드 실패]', err?.message || err)
+        setProducts([])
+        setProductsLoadError(true)
+        setProductsLoading(false)
+      })
+  }, [])
 
   useEffect(() => {
-    productApi.getAll().then(setProducts).catch(() => setProducts(staticProducts))
+    let retryCount = 0
+    const maxRetries = 8
+    const run = () => {
+      productApi.getAll()
+        .then((data) => {
+          setProducts(toProductList(data))
+          setProductsLoadError(false)
+          setProductsLoading(false)
+        })
+        .catch((err) => {
+          if (retryCount < maxRetries) {
+            retryCount += 1
+            setTimeout(run, 1500)
+          } else {
+            console.error('[상품 로드 실패]', err?.message || err)
+            setProducts([])
+            setProductsLoadError(true)
+            setProductsLoading(false)
+          }
+        })
+    }
+    run()
+  }, [])
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        productApi.getAll()
+          .then((data) => setProducts((prev) => toProductList(data).length > 0 ? toProductList(data) : prev))
+          .catch(() => {})
+      }
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [])
 
   useEffect(() => {
@@ -48,11 +120,28 @@ function ShopContent({ user, onLogout }) {
     localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(next))
   }
 
+  const skuSort = (a, b) => {
+    const skuA = (a.sku || '').trim()
+    const skuB = (b.sku || '').trim()
+    if (skuA && skuB) return skuA.localeCompare(skuB)
+    if (skuA) return -1
+    if (skuB) return 1
+    return String(a._id || '').localeCompare(String(b._id || ''))
+  }
+
   const categories = useMemo(() => {
-    const set = new Set()
-    products.forEach((p) => set.add(getCategory(p)))
-    return Array.from(set).sort()
-  }, [])
+    const sorted = [...products].sort(skuSort)
+    const seen = new Set()
+    const result = []
+    sorted.forEach((p) => {
+      const cat = getCategory(p)
+      if (cat && !seen.has(cat)) {
+        seen.add(cat)
+        result.push(cat)
+      }
+    })
+    return result
+  }, [products])
 
   const filteredProducts = useMemo(() => {
     let result = products
@@ -68,8 +157,22 @@ function ShopContent({ user, onLogout }) {
     if (categoryFilter !== 'all') {
       result = result.filter((p) => getCategory(p) === categoryFilter)
     }
-    return result
+    return [...result].sort(skuSort)
+  }, [products, searchTerm, categoryFilter])
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE))
+  const paginatedProducts = useMemo(() => {
+    const start = (productPage - 1) * ITEMS_PER_PAGE
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE)
+  }, [filteredProducts, productPage, ITEMS_PER_PAGE])
+
+  useEffect(() => {
+    setProductPage(1)
   }, [searchTerm, categoryFilter])
+
+  useEffect(() => {
+    if (productPage > totalPages && totalPages > 0) setProductPage(totalPages)
+  }, [productPage, totalPages])
 
   const addToCart = (product, qty = 1) => {
     const count = Math.max(1, parseInt(qty) || 0)
@@ -130,7 +233,18 @@ function ShopContent({ user, onLogout }) {
 
   return (
     <div className="shop-page">
-      <ShopNavbar user={user} onLogout={onLogout} cartCount={cart.length} />
+      <ShopNavbar
+        user={user}
+        onLogout={onLogout}
+        cartCount={cart.length}
+        onCartClick={() => {
+          setShowOrderList(false)
+          setShowPayment(false)
+          setPaymentStep(1)
+          setPaymentMethod('')
+          setTimeout(() => document.getElementById('cart-section')?.scrollIntoView({ behavior: 'smooth' }), 50)
+        }}
+      />
 
       <ShopBody
         searchTerm={searchTerm}
@@ -160,7 +274,14 @@ function ShopContent({ user, onLogout }) {
           setPaymentStep(1)
           setPaymentMethod('')
         }}
-        filteredProducts={filteredProducts}
+        filteredProducts={paginatedProducts}
+        allFilteredCount={filteredProducts.length}
+        productPage={productPage}
+        totalPages={totalPages}
+        onProductPageChange={setProductPage}
+        productsLoading={productsLoading}
+        productsLoadError={productsLoadError}
+        onRetryProducts={loadProducts}
         wishlist={wishlist}
         toggleWishlist={toggleWishlist}
         addToCart={addToCart}

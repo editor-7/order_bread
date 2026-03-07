@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema(
   {
+    sku: { type: String, trim: true, unique: true, sparse: true },
     name: { type: String, required: true },
     desc: { type: String, default: '' },
     category: { type: String, default: '' },

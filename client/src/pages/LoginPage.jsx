@@ -34,9 +34,8 @@ function LoginPage() {
       setSuccess(true)
       setTimeout(() => navigate('/'), 1500)
     } catch (err) {
-      const message = err.message || '로그인에 실패했습니다.'
-      const isNetworkError = message.includes('fetch') || message.includes('Network')
-      setError(isNetworkError ? '서버에 연결할 수 없습니다. 네트워크를 확인해 주세요.' : message)
+      const message = err?.message || (typeof err === 'string' ? err : '로그인에 실패했습니다.')
+      setError(message)
     } finally {
       setIsLoading(false)
     }
