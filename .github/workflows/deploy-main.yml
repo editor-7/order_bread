@@ -25,6 +25,7 @@ jobs:
             name: order-bread
             app: node@18
             options:
+              docbase: server
               ports: "3000"
               install: cd server && npm install
               start: cd server && npm start
@@ -41,4 +42,4 @@ jobs:
               git:
                 url: git@github.com:${{ github.repository }}.git
                 ref: ${{ github.ref }}
-              subdir: server
+                subdir: server
