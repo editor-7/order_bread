@@ -31,8 +31,6 @@ function ShopBody({
   wishlist,
   toggleWishlist,
   addToCart,
-  setCart,
-  setAddedMsg,
   groupedCart,
   changeCartQty,
   removeFromCart,
@@ -248,15 +246,6 @@ function ShopBody({
           </div>
         ) : (
           <>
-            <section className="shop-intro">
-              <h2 className="intro-title">가족이 안심하고 먹을 수 있는 빵</h2>
-              <div className="intro-content">
-                <p>가족이 안심하고 먹을 수 있는 빵을 만들고 싶었습니다. 그래서 좋은 재료와 정직한 방식으로 빵을 만듭니다.</p>
-                <p>통밀에는 식이섬유와 비타민 미네랄이 풍부해 장 건강과 포만감에 도움이 됩니다. 반죽은 충분한 시간을 들여 천천히 발효해 소화가 편안하고 깊은 풍미가 나도록 만들었습니다.</p>
-                <p>설탕과 버터를 과하게 사용하지 않고, 밀가루·물·소금·천연발효종 중심의 단순한 재료로 빵을 만듭니다. 통밀과 백밀의 균형 있는 비율로 건강함과 부드러운 식감을 함께 살렸습니다.</p>
-                <p className="intro-closing">부담 없이 매일 먹을 수 있는 담백한 빵, 가족이 함께 먹을 수 있는 정직한 빵입니다.</p>
-              </div>
-            </section>
             <div className="shop-toolbar">
               <div className="filter-row">
                 <button
@@ -372,17 +361,7 @@ function ShopBody({
                           const span = card?.querySelector('.qty-value')
                           const qty = span ? parseInt(span.textContent, 10) : 1
                           const count = Math.min(99, Math.max(1, isNaN(qty) ? 1 : qty))
-                          if (setCart && setAddedMsg) {
-                            setCart((prev) => {
-                              const next = [...prev]
-                              for (let i = 0; i < count; i++) next.push(p)
-                              return next
-                            })
-                            setAddedMsg('장바구니에 담았습니다')
-                            setTimeout(() => setAddedMsg(''), 2500)
-                          } else {
-                            addToCart(p, count)
-                          }
+                          addToCart(p, count)
                         }}
                       >
                         장바구니 담기
@@ -447,10 +426,11 @@ function ShopBody({
                     <div className="cart-item-info">
                       <strong>{g.name}</strong>
                       <span>{g.size} / {g.unit}</span>
+                      <span className="cart-item-unit-price">단가 {g.price.toLocaleString()}원</span>
                     </div>
                     <div className="cart-item-actions">
                       <button type="button" onClick={() => changeCartQty(idx, -1)}>-</button>
-                      <span>{g.count}</span>
+                      <span className="cart-item-count">{g.count}개</span>
                       <button type="button" onClick={() => changeCartQty(idx, 1)}>+</button>
                       <span className="cart-item-price">{(g.price * g.count).toLocaleString()}원</span>
                       <button type="button" className="cart-remove" onClick={() => removeFromCart(idx)}>×</button>

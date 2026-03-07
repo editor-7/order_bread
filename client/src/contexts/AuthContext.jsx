@@ -1,11 +1,14 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
   const [isReady, setIsReady] = useState(false)
+  const [pendingWelcome, setPendingWelcome] = useState(null)
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
@@ -22,6 +25,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('user', JSON.stringify(newUser))
     setToken(newToken)
     setUser(newUser)
+    setPendingWelcome(newUser?.name || null)
   }
 
   const logout = () => {
@@ -29,12 +33,15 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('user')
     setToken(null)
     setUser(null)
+    navigate('/')
   }
 
   const isLoggedIn = !!token
 
+  const clearWelcome = useCallback(() => setPendingWelcome(null), [])
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoggedIn, login, logout, isReady }}>
+    <AuthContext.Provider value={{ user, token, isLoggedIn, login, logout, isReady, pendingWelcome, clearWelcome }}>
       {children}
     </AuthContext.Provider>
   )

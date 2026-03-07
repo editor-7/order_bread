@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './ShopNavbar.css'
 
-function ShopNavbar({ user, onLogout, cartCount = 0, onCartClick }) {
+function ShopNavbar({ user, onLogout, cartCount = 0 }) {
   const [showLogoModal, setShowLogoModal] = useState(false)
 
   return (
@@ -22,9 +22,11 @@ function ShopNavbar({ user, onLogout, cartCount = 0, onCartClick }) {
             </div>
           )}
           <nav className="shop-nav-actions">
-            <button type="button" className="nav-cart" onClick={onCartClick || undefined} aria-label="장바구니 보기">
-              🛒 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-            </button>
+            <Link to="/greeting" className="nav-greeting">인사말</Link>
+            <Link to="/cart" className="nav-cart" aria-label="장바구니 보기">
+              <span className="nav-cart-icon">🛒</span>
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </Link>
             {user?.user_type === 'admin' && (
               <Link to="/admin" className="nav-admin">관리</Link>
             )}

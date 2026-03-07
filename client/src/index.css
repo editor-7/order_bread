@@ -28,6 +28,8 @@
 
 html {
   font-size: 16px;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 body {
@@ -38,10 +40,16 @@ body {
   background: var(--color-cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 #root {
   min-height: 100vh;
+  width: 100%;
+  display: block;
 }
 
 .shop-page {
@@ -51,13 +59,15 @@ body {
   flex-direction: column;
 }
 
+/* 앱 레이아웃 */
+.app-routes {
+  min-height: 100vh;
+}
+
 /* 모바일 터치 최적화 */
 @media (max-width: 768px) {
   html {
     -webkit-text-size-adjust: 100%;
-  }
-  body {
-    overflow-x: hidden;
   }
 }
 

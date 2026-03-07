@@ -1,0 +1,143 @@
+@import '../components/ShopBody.css';
+
+.cart-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.cart-page-main {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+.cart-content {
+  margin-top: 1rem;
+}
+
+.cart-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cart-back-btn {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-soft-brown);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.cart-back-btn:hover {
+  background: var(--color-blush);
+  color: var(--color-rose-gold);
+}
+
+.cart-page-header .cart-page-title {
+  margin: 0;
+  flex: 1;
+}
+
+.cart-page-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem;
+  color: var(--color-charcoal);
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.cart-empty p {
+  margin: 0 0 1rem;
+  color: var(--color-muted);
+}
+
+.btn-continue-shopping {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  background: var(--color-rose-gold);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-continue-shopping:hover {
+  background: var(--color-charcoal);
+  color: #fff;
+}
+
+.cart-content .btn-continue-shopping {
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+.btn-order-list {
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--color-soft-brown);
+  transition: all 0.2s;
+}
+
+.btn-order-list:hover {
+  background: var(--color-blush);
+  color: var(--color-charcoal);
+}
+
+.order-list-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.order-list-actions .back-to-list-btn {
+  text-decoration: none;
+  color: inherit;
+}
+
+.payment-header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.payment-header-actions .back-to-cart-btn {
+  text-decoration: none;
+  color: inherit;
+}
+
+.cart-toast-msg {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 1.75rem;
+  background: var(--color-rose-gold);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  z-index: 1000;
+  animation: fadeInOut 2.5s ease;
+  box-shadow: var(--shadow-card);
+}
