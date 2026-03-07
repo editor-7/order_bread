@@ -23,10 +23,11 @@ jobs:
           stage: main
           yaml: |
             name: order-bread
-            app: dockerfile
+            app: node@18
             options:
               ports: "3000"
-              dockerfile: Dockerfile
+              install: npm ci --omit=dev
+              start: npm start
               healthz: /
               env:
                 - name: NODE_ENV
