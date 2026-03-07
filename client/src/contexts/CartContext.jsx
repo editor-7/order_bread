@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useMemo, useEffect, useRef } from 'react'
 import { useAuth } from './AuthContext'
+import { getCartStorageKey } from '@/utils/constants'
 
 const CartContext = createContext(null)
 
@@ -11,10 +12,33 @@ export function CartProvider({ children }) {
   useEffect(() => {
     const currentId = user?._id ?? null
     if (prevUserIdRef.current !== currentId) {
-      setCart([])
+      const prevId = prevUserIdRef.current
+      if (prevId) {
+        try {
+          localStorage.setItem(getCartStorageKey(prevId), JSON.stringify(cart))
+        } catch (e) {}
+      }
+      if (currentId) {
+        try {
+          const saved = localStorage.getItem(getCartStorageKey(currentId))
+          setCart(saved ? JSON.parse(saved) : [])
+        } catch (e) {
+          setCart([])
+        }
+      } else {
+        setCart([])
+      }
       prevUserIdRef.current = currentId
     }
   }, [user])
+
+  useEffect(() => {
+    if (user?._id) {
+      try {
+        localStorage.setItem(getCartStorageKey(user._id), JSON.stringify(cart))
+      } catch (e) {}
+    }
+  }, [user?._id, cart])
 
   const groupedCart = useMemo(() => {
     const map = new Map()

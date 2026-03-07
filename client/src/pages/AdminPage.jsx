@@ -58,7 +58,7 @@ function AdminPage() {
       const saved = localStorage.getItem(ORDER_STORAGE_KEY)
       if (saved) {
         const list = JSON.parse(saved)
-        setOrders(list.slice(0, 10))
+        setOrders(list)
       }
     } catch (e) {}
   }
@@ -446,40 +446,114 @@ function AdminPage() {
           {activeMenu === 'orders' && (
             <section className="admin-section">
               <div className="section-header">
-                <h2>최근 주문</h2>
-                <button type="button" className="view-all-btn">전체보기</button>
+                <h2>주문 관리 ({orders.length}건)</h2>
+                <button type="button" className="view-all-btn" onClick={loadOrders}>새로고침</button>
               </div>
-              {orders.length === 0 ? (
-                <p className="empty-msg">최근 주문이 없습니다.</p>
-              ) : (
-                <ul className="order-list">
-                  {orders.map((order) => (
-                    <li key={order.id} className="order-card">
-                      <div className="order-id">ORD-{String(order.id).slice(-6)}</div>
-                      <div className="order-customer">{order.userName || '-'}</div>
-                      <div className="order-date">
-                        {order.createdAt ? new Date(order.createdAt).toISOString().slice(0, 10) : '-'}
-                      </div>
-                      <span
-                        className="order-status"
-                        style={{ background: statusColors[order.status] || statusColors.처리중 }}
-                      >
-                        {statusText(order.status)}
-                      </span>
-                      <div className="order-amount">
-                        {order.totalPrice ? `${order.totalPrice.toLocaleString()}원` : '0원'}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div className="order-table-wrap">
+                <table className="order-table">
+                  <thead>
+                    <tr>
+                      <th>주문번호</th>
+                      <th>주문일자</th>
+                      <th>주문금액</th>
+                      <th>회원아이디</th>
+                      <th>주문자</th>
+                      <th>결제수단</th>
+                      <th>상태</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="order-empty-cell">
+                          주문 내역이 없습니다. (0건)
+                        </td>
+                      </tr>
+                    ) : (
+                      orders.map((order) => {
+                        const matchedUser = users.find((u) => String(u._id) === String(order.userId))
+                        const userEmail = matchedUser?.email || order.userId || '-'
+                        return (
+                          <tr key={order.id}>
+                            <td className="order-num">ORD-{String(order.id).slice(-8)}</td>
+                            <td className="order-date">
+                              {order.createdAt ? new Date(order.createdAt).toLocaleString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }) : '-'}
+                            </td>
+                            <td className="order-amount">{order.totalPrice ? `${order.totalPrice.toLocaleString()}원` : '0원'}</td>
+                            <td className="order-user-id">{userEmail}</td>
+                            <td className="order-user-name">{order.userName || '-'}</td>
+                            <td className="order-payment">
+                              {order.paymentMethod === 'card' ? '카드' : order.paymentMethod === 'transfer' ? '계좌이체' : order.paymentMethod === 'deposit' ? '무통장입금' : '-'}
+                            </td>
+                            <td>
+                              <span
+                                className="order-status-badge"
+                                style={{ background: statusColors[order.status] || statusColors.처리중 }}
+                              >
+                                {statusText(order.status)}
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </section>
           )}
 
           {activeMenu === 'sales' && (
             <section className="admin-section">
-              <h2>매출 분석</h2>
-              <p className="placeholder-msg">매출 분석 기능 준비 중입니다.</p>
+              <div className="section-header">
+                <h2>매출 분석 ({orders.length}건)</h2>
+                <button type="button" className="view-all-btn" onClick={loadOrders}>새로고침</button>
+              </div>
+              <div className="order-table-wrap">
+                <table className="order-table sales-table">
+                  <thead>
+                    <tr>
+                      <th>구분</th>
+                      <th>건수</th>
+                      <th>금액</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="order-empty-cell">
+                          매출 내역이 없습니다. (0건)
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {['결제완료', '입금대기'].map((status) => {
+                          const filtered = orders.filter((o) => o.status === status)
+                          const total = filtered.reduce((s, o) => s + (o.totalPrice || 0), 0)
+                          return (
+                            <tr key={status}>
+                              <td>{status}</td>
+                              <td>{filtered.length}건</td>
+                              <td className="order-amount">{total.toLocaleString()}원</td>
+                            </tr>
+                          )
+                        })}
+                        <tr className="sales-total-row">
+                          <td><strong>합계</strong></td>
+                          <td><strong>{orders.length}건</strong></td>
+                          <td className="order-amount"><strong>{orders.reduce((s, o) => s + (o.totalPrice || 0), 0).toLocaleString()}원</strong></td>
+                        </tr>
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </section>
           )}
 
