@@ -11,7 +11,7 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
         <div className="shop-header-inner">
           <div className="shop-logo">
             <button type="button" className="logo-img-btn" onClick={(e) => { e.stopPropagation(); setShowLogoModal(true) }} aria-label="로고 크게 보기">
-              <img src="/jpg/jpg_01.png?v=2" alt="Mrs. Park Bakery" className="logo-img" loading="eager" decoding="async" />
+              <img src="/jpg/jpg_01.png?v=3" alt="Mrs. Park Bakery" className="logo-img" loading="eager" decoding="async" />
             </button>
             <Link to="/" className="shop-logo-text">
               <h1>Mrs. Park<br />Bakery</h1>
@@ -19,7 +19,7 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
           </div>
           {showLogoModal && createPortal(
             <div className="logo-modal-overlay" onClick={() => setShowLogoModal(false)} role="dialog" aria-modal="true">
-              <img src="/jpg/jpg_01.png?v=2" alt="Mrs. Park Bakery" className="logo-modal-img" onClick={(e) => e.stopPropagation()} />
+              <img src="/jpg/jpg_01.png?v=3" alt="Mrs. Park Bakery" className="logo-modal-img" onClick={(e) => e.stopPropagation()} />
             </div>,
             document.body
           )}
