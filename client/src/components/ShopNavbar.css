@@ -194,20 +194,20 @@
   }
   .shop-logo {
     flex-shrink: 0;
-    min-width: 72px;
+    min-width: 88px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   .logo-img-btn {
-    width: 72px;
-    height: 72px;
+    width: 88px;
+    height: 88px;
   }
   .logo-img {
-    width: 72px !important;
-    height: 72px !important;
-    min-width: 72px !important;
-    min-height: 72px !important;
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px !important;
+    min-height: 88px !important;
     background: rgba(255,255,255,0.5);
     border-radius: 10px;
   }
@@ -225,18 +225,18 @@
 
 @media (max-width: 480px) {
   .shop-logo {
-    min-width: 72px;
+    min-width: 88px;
     gap: 0.4rem;
   }
   .logo-img-btn {
-    width: 72px;
-    height: 72px;
+    width: 88px;
+    height: 88px;
   }
   .logo-img {
-    width: 72px !important;
-    height: 72px !important;
-    min-width: 72px !important;
-    min-height: 72px !important;
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px !important;
+    min-height: 88px !important;
   }
   .shop-header h1 {
     font-size: 0.85rem;
