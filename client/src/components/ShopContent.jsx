@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react'
 import { productApi } from '@/services/api'
 import { getCategory } from '@/data/products'
 import { ORDER_STORAGE_KEY } from '@/utils/constants'
+import { isDuplicateOrder, validatePayment } from '@/utils/orderUtils'
 import { skuSort } from '@/utils/productUtils'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCart } from '@/contexts/CartContext'
@@ -125,6 +126,13 @@ function ShopContent({ user, onLogout }) {
   }, [orderList, user?._id])
 
   const saveOrder = (items, total, method, status) => {
+    const validation = validatePayment(deliveryInfo, method)
+    if (!validation.ok) return validation
+
+    if (isDuplicateOrder(orderList, items, total, user?._id)) {
+      return { ok: false, message: '동일한 주문이 최근에 접수되었습니다. 잠시 후 다시 시도해주세요.' }
+    }
+
     const order = {
       id: Date.now(),
       userId: user?._id,
@@ -139,6 +147,7 @@ function ShopContent({ user, onLogout }) {
     const next = [order, ...orderList]
     setOrderList(next)
     localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(next))
+    return { ok: true }
   }
 
   const categories = useMemo(() => {

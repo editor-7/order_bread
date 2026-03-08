@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCart } from '@/contexts/CartContext'
 import { ORDER_STORAGE_KEY } from '@/utils/constants'
+import { isDuplicateOrder, validatePayment } from '@/utils/orderUtils'
 import ShopNavbar from '@/components/ShopNavbar'
 import ShopFooter from '@/components/ShopFooter'
 import './CartPage.css'
@@ -33,6 +34,13 @@ function CartPage() {
   }, [])
 
   const saveOrder = (items, total, method, status) => {
+    const validation = validatePayment(deliveryInfo, method)
+    if (!validation.ok) return validation
+
+    if (isDuplicateOrder(orderList, items, total, user?._id)) {
+      return { ok: false, message: '동일한 주문이 최근에 접수되었습니다. 잠시 후 다시 시도해주세요.' }
+    }
+
     const order = {
       id: Date.now(),
       userId: user?._id,
@@ -47,6 +55,7 @@ function CartPage() {
     const next = [order, ...orderList]
     setOrderList(next)
     localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(next))
+    return { ok: true }
   }
 
   const handlePaymentComplete = () => {
@@ -281,15 +290,18 @@ function CartPage() {
                         alert('결제를 완료하려면 회원가입이 필요합니다.')
                         return
                       }
-                      if (paymentMethod === 'card') {
-                        saveOrder(groupedCart, totalPrice, paymentMethod, '결제완료')
-                        alert('결제가 완료되었습니다.')
-                        handlePaymentComplete()
-                      } else if (paymentMethod === 'transfer' || paymentMethod === 'deposit') {
-                        saveOrder(groupedCart, totalPrice, paymentMethod, '입금대기')
-                        alert('입금 요청이 접수되었습니다.\n입금 확인 후 주문이 처리됩니다.')
-                        handlePaymentComplete()
+                      const status = paymentMethod === 'card' ? '결제완료' : '입금대기'
+                      const result = saveOrder(groupedCart, totalPrice, paymentMethod, status)
+                      if (!result.ok) {
+                        alert(result.message)
+                        return
                       }
+                      if (paymentMethod === 'card') {
+                        alert('결제가 완료되었습니다.')
+                      } else {
+                        alert('입금 요청이 접수되었습니다.\n입금 확인 후 주문이 처리됩니다.')
+                      }
+                      handlePaymentComplete()
                     }}
                   >
                     {paymentMethod === 'card' ? '결제 완료' : '입금 확인 요청'}

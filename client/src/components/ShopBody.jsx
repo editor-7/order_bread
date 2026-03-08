@@ -230,15 +230,18 @@ function ShopBody({
                         alert('결제를 완료하려면 회원가입이 필요합니다.')
                         return
                       }
-                      if (paymentMethod === 'card') {
-                        saveOrder(groupedCart, totalPrice, paymentMethod, '결제완료')
-                        alert('결제가 완료되었습니다.')
-                        onPaymentComplete()
-                      } else if (paymentMethod === 'transfer' || paymentMethod === 'deposit') {
-                        saveOrder(groupedCart, totalPrice, paymentMethod, '입금대기')
-                        alert('입금 요청이 접수되었습니다.\n입금 확인 후 주문이 처리됩니다.')
-                        onPaymentComplete()
+                      const status = paymentMethod === 'card' ? '결제완료' : '입금대기'
+                      const result = saveOrder(groupedCart, totalPrice, paymentMethod, status)
+                      if (!result.ok) {
+                        alert(result.message)
+                        return
                       }
+                      if (paymentMethod === 'card') {
+                        alert('결제가 완료되었습니다.')
+                      } else {
+                        alert('입금 요청이 접수되었습니다.\n입금 확인 후 주문이 처리됩니다.')
+                      }
+                      onPaymentComplete()
                     }}
                   >
                     {paymentMethod === 'card' ? '결제 완료' : '입금 확인 요청'}
