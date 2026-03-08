@@ -14,7 +14,7 @@ function ShopNavbar({ user, onLogout, cartCount = 0 }) {
               <img src="/jpg/jpg_01.png?v=2" alt="Mrs. Park Bakery" className="logo-img" loading="eager" decoding="async" />
             </button>
             <Link to="/" className="shop-logo-text">
-              <h1>Mrs. Park Bakery</h1>
+              <h1>Mrs. Park<br />Bakery</h1>
             </Link>
           </div>
           {showLogoModal && createPortal(
