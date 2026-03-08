@@ -34,6 +34,9 @@
   .filter-row button {
     flex-shrink: 0;
     white-space: nowrap;
+    font-size: 0.82rem;
+    letter-spacing: -0.02em;
+    padding: 0.4rem 0.7rem;
   }
 }
 .filter-row button {
